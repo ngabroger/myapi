@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Dashboard - MyAPI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .api-endpoint {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+            border-left: 4px solid #667eea;
+        }
+        
+        .method {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            color: white;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+        
+        .get { background-color: #28a745; }
+        
+        .url {
+            font-family: 'Courier New', monospace;
+            background: #e9ecef;
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            margin: 0.5rem 0;
+        }
+        
+        .pagination-controls {
+            display: flex;
+            gap: 10px;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #5a6fd8;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .user-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .user-card {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .user-id {
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .user-status {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .status-active { background-color: #d4edda; color: #155724; }
+        .status-inactive { background-color: #f8d7da; color: #721c24; }
+        .status-invited { background-color: #d1ecf1; color: #0c5460; }
+        .status-suspended { background-color: #f5c6cb; color: #721c24; }
+        
+        .pagination-info {
+            background: #e9ecef;
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #6c757d;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 MyAPI Dashboard</h1>
+            <p>Faker Users API dengan Pagination</p>
+        </div>
+        
+        <div class="section">
+            <h2>📚 Available API Endpoints</h2>
+            
+            <div class="api-endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <strong>Get Users with Pagination</strong>
+                </div>
+                <div class="url">/api/faker-users/</div>
+                <p><strong>Parameters:</strong></p>
+                <ul>
+                    <li><code>page</code> - Nomor halaman (default: 1)</li>
+                    <li><code>limit</code> - Jumlah item per halaman (default: 10, max: 100)</li>
+                    <li><code>total</code> - Total data yang di-generate (default: 100)</li>
+                </ul>
+                <p><strong>Contoh:</strong></p>
+                <div class="url">/api/faker-users/?page=1&limit=10&total=50</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>👥 User Data Preview</h2>
+            
+            <div class="pagination-controls">
+                <label for="page">Halaman:</label>
+                <input type="number" id="page" value="1" min="1" max="100">
+                
+                <label for="limit">Per Halaman:</label>
+                <select id="limit">
+                    <option value="5">5</option>
+                    <option value="10" selected>10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                </select>
+                
+                <label for="total">Total Data:</label>
+                <input type="number" id="total" value="100" min="10" max="1000">
+                
+                <button class="btn btn-primary" onclick="loadUsers()">Load Data</button>
+                <button class="btn btn-secondary" onclick="openApiUrl()">Open API</button>
+            </div>
+            
+            <div id="pagination-info" class="pagination-info" style="display: none;"></div>
+            <div id="users-container" class="user-grid"></div>
+            <div id="loading" class="loading" style="display: none;">Loading...</div>
+            <div id="error" class="error" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        async function loadUsers() {
+            const page = document.getElementById('page').value;
+            const limit = document.getElementById('limit').value;
+            const total = document.getElementById('total').value;
+            
+            const loadingEl = document.getElementById('loading');
+            const errorEl = document.getElementById('error');
+            const containerEl = document.getElementById('users-container');
+            const paginationEl = document.getElementById('pagination-info');
+            
+            // Show loading
+            loadingEl.style.display = 'block';
+            errorEl.style.display = 'none';
+            containerEl.innerHTML = '';
+            paginationEl.style.display = 'none';
+            
+            try {
+                const response = await fetch(`/api/faker-users/?page=${page}&limit=${limit}&total=${total}`);
+                const data = await response.json();
+                
+                // Hide loading
+                loadingEl.style.display = 'none';
+                
+                if (response.ok) {
+                    displayUsers(data.data);
+                    displayPaginationInfo(data.pagination);
+                } else {
+                    throw new Error('Failed to fetch data');
+                }
+            } catch (error) {
+                loadingEl.style.display = 'none';
+                errorEl.style.display = 'block';
+                errorEl.textContent = 'Error loading data: ' + error.message;
+            }
+        }
+        
+        function displayUsers(users) {
+            const container = document.getElementById('users-container');
+            
+            if (users.length === 0) {
+                container.innerHTML = '<p>No users found.</p>';
+                return;
+            }
+            
+            container.innerHTML = users.map(user => `
+                <div class="user-card">
+                    <div class="user-id">ID: ${user.id}</div>
+                    <div><strong>${user.firstName} ${user.lastName}</strong></div>
+                    <div>${user.email}</div>
+                    <div>Role: ${user.role}</div>
+                    <div>
+                        <span class="user-status status-${user.status}">${user.status}</span>
+                    </div>
+                    <div style="font-size: 0.8rem; color: #6c757d; margin-top: 0.5rem;">
+                        Created: ${new Date(user.createdAt).toLocaleDateString()}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function displayPaginationInfo(pagination) {
+            const container = document.getElementById('pagination-info');
+            container.style.display = 'block';
+            container.innerHTML = `
+                <strong>Pagination Info:</strong><br>
+                Halaman ${pagination.current_page} dari ${pagination.total_pages} | 
+                Menampilkan ${pagination.per_page} item | 
+                Total ${pagination.total_items} items
+                ${pagination.has_previous ? ` | <a href="#" onclick="goToPage(${pagination.previous_page})">← Previous</a>` : ''}
+                ${pagination.has_next ? ` | <a href="#" onclick="goToPage(${pagination.next_page})">Next →</a>` : ''}
+            `;
+        }
+        
+        function goToPage(page) {
+            document.getElementById('page').value = page;
+            loadUsers();
+        }
+        
+        function openApiUrl() {
+            const page = document.getElementById('page').value;
+            const limit = document.getElementById('limit').value;
+            const total = document.getElementById('total').value;
+            const url = `/api/faker-users/?page=${page}&limit=${limit}&total=${total}`;
+            window.open(url, '_blank');
+        }
+        
+        // Load initial data
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUsers();
+        });
+    </script>
+</body>
+</html>
