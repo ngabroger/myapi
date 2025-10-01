@@ -37,6 +37,7 @@ class FakerUserView(APIView):
                 "firstName": fake.first_name(),
                 "lastName": fake.last_name(),
                 "email": fake.email(),
+                "phone": fake.phone_number(),  # Menambahkan nomor HP
                 "status": random.choice(status_choices),
                 "role": random.choice(role_choices),
                 "createdAt": fake.date_time_between(start_date='-2y', end_date='now').isoformat(),
