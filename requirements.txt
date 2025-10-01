@@ -3,4 +3,4 @@ djangorestframework
 requests
 Faker
 django-filter
-
+django-cors-headers
