@@ -1,6 +1,5 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.shortcuts import render
 from faker import Faker
 import random
 import math
@@ -61,8 +60,3 @@ class FakerUserView(APIView):
         }
 
         return Response(response_data)
-
-
-def dashboard_view(request):
-    """View untuk menampilkan dashboard web dengan daftar users dan API endpoints"""
-    return render(request, 'users/dashboard.html')
