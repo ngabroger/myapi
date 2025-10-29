@@ -145,3 +145,40 @@ class FakerUserDetailView(APIView):
             return Response({"detail": "Not found"}, status=status.HTTP_404_NOT_FOUND)
         ALL_USERS.remove(user)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class FakerUserBulkDeleteView(APIView):
+    """
+    POST: bulk delete users by IDs
+    Body: {"ids": [1001, 1002, 1003]}
+    """
+    def post(self, request):
+        data = request.data or {}
+        ids = data.get("ids", [])
+        
+        if not isinstance(ids, list):
+            return Response(
+                {"detail": "ids must be a list"}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        if not ids:
+            return Response(
+                {"detail": "ids list cannot be empty"}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        to_delete = [u for u in ALL_USERS if u["id"] in ids]
+        deleted_ids = [u["id"] for u in to_delete]
+        
+        for user in to_delete:
+            ALL_USERS.remove(user)
+        
+        not_found = [id for id in ids if id not in deleted_ids]
+        
+        return Response({
+            "deleted": deleted_ids,
+            "deleted_count": len(deleted_ids),
+            "not_found": not_found,
+            "not_found_count": len(not_found)
+        }, status=status.HTTP_200_OK)
+
